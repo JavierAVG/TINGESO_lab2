@@ -1,0 +1,28 @@
+#spring:
+#  application:
+#    name: client-service
+#  cloud:
+#    config:
+#      enabled: true
+#      uri: http://localhost:8081
+#  datasource:
+#    url: jdbc:mysql://localhost:3306/clientdb
+#    username: root
+#    password: 36133520
+#  jpa:
+#    hibernate:
+#      ddl-auto: update
+
+spring:
+  application:
+    name: client-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/clientdb
+    username: root
+    password: 36133520
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+server:
+  port: 8001
