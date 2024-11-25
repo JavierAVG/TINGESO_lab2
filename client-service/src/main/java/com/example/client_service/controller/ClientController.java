@@ -1,6 +1,6 @@
 package com.example.client_service.controller;
 
-import com.example.client_service.entity.Client;
+import com.example.client_service.entity.ClientEntity;
 import com.example.client_service.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,17 +15,26 @@ public class ClientController {
     @Autowired
     private ClientService clientService;
 
-    @GetMapping("/getclients")
-    public ResponseEntity<List<Client>> getClients() {
-        List<Client> clients = clientService.getClients();
+    @GetMapping("/getall")
+    public ResponseEntity<List<ClientEntity>> getClients() {
+        List<ClientEntity> clients = clientService.getClients();
         if (clients == null || clients.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(clients);
     }
 
+    @GetMapping("/get/{id}")
+    public ResponseEntity<ClientEntity> getClientById(@PathVariable("id") int id) {
+        ClientEntity client = clientService.getClientById(id);
+        if (client == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(client);
+    }
+
     @PostMapping("/save")
-    public ResponseEntity<Client> save(@RequestBody Client client) {
+    public ResponseEntity<ClientEntity> save(@RequestBody ClientEntity client) {
         return ResponseEntity.ok(clientService.save(client));
     }
 }

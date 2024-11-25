@@ -5,14 +5,14 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.3.5</version>
+		<version>3.4.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>client-service</artifactId>
+	<artifactId>status-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>client-service</name>
-	<description>microservice for Tingeso lab 2</description>
+	<name>status-service</name>
+	<description>status for TINGESO</description>
 	<url/>
 	<licenses>
 		<license/>

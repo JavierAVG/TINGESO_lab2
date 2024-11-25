@@ -1,14 +1,13 @@
-package com.example.client_service;
+package com.example.status_service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-//@EnableEurekaClient
-public class ClientServiceApplication {
+public class StatusServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ClientServiceApplication.class, args);
+		SpringApplication.run(StatusServiceApplication.class, args);
 	}
 
 }
