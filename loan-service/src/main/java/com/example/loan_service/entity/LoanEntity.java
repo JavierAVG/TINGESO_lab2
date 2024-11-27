@@ -16,10 +16,10 @@ public class LoanEntity {
     @Column(unique = true, nullable = false)
     private Long id;
 
-    private String type;
-    private int duration;
+    private String type;                // First home - Second home - Commercial properties - Remodeling
+    private int duration;               // in years
     private int amount;
-    private double interestrate;
+    private double interestrate;        // annual
     private int monthlyincome;
     private int employmentlongevity;
     private int totaldebt;
