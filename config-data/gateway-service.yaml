@@ -21,3 +21,19 @@ spring:
           uri: lb://client-service
           predicates:
             - Path=/client/**
+        - id: loan-service
+          uri: lb://loan-service
+          predicates:
+            - Path=/loan/**
+        - id: simulator-service
+          uri: lb://simulator-service
+          predicates:
+            - Path=/simulator/**
+        - id: status-service
+          uri: lb://status-service
+          predicates:
+            - Path=/status/**
+        - id: evaluation-service
+          uri: lb://evaluation-service
+          predicates:
+              - Path=/evaluation/**
