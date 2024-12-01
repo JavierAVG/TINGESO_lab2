@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/savings")
+@RequestMapping("/loan/savings")
 public class SavingsController {
     @Autowired
     private SavingsService savingsService;
