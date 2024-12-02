@@ -1,8 +1,21 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+body, html, #root {
+  height: 100%;
+  margin: 0;
+  background-color: white;
+  color: black; /* Opcional: para asegurar que el texto sea visible en el fondo blanco */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%; /* Asegura que ocupe todo el ancho */
+}
+
+.full-height {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%; /* Asegura que ocupe todo el ancho */
 }
 
 .logo {
