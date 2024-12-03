@@ -55,7 +55,7 @@ const Simulator = () => {
             <FormControl fullWidth sx={{marginBottom: 2}}>
                 <TextField
                     required={true}
-                    label="Tasa de Interes (Mensual)"
+                    label="Tasa de Interes (Anual)"
                     variant="outlined"
                     value={interestRate}
                     onChange={e => {
