@@ -20,4 +20,28 @@ public class StatusController {
         return ResponseEntity.ok(statusService.save(id, monthlyfee, duration, amount));
     }
 
+    @PutMapping("/updatestate/{id}")
+    public ResponseEntity<StatusEntity> updateState(@PathVariable("id") Long id,
+                                                    @RequestParam("state") String state) {
+        return ResponseEntity.ok(statusService.updateState(id, state));
+    }
+
+    @GetMapping("/get/{id}")
+    public ResponseEntity<StatusEntity> getStatusById(@PathVariable("id") Long id) {
+        StatusEntity status = statusService.getStatusById(id);
+        if (status == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(status);
+    }
+
+    @GetMapping("/getall")
+    public ResponseEntity<Iterable<StatusEntity>> getStatuses() {
+        Iterable<StatusEntity> statuses = statusService.getStatuses();
+        if (statuses == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(statuses);
+    }
+
 }

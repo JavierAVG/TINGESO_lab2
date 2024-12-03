@@ -17,7 +17,7 @@ const Simulator = () => {
         e.preventDefault();
         try {
             const response = await simulatorService.simulate({
-                interest_rate: interestRate,
+                interestrate: interestRate,
                 duration: duration,
                 amount: amount
             });
@@ -55,7 +55,7 @@ const Simulator = () => {
             <FormControl fullWidth sx={{marginBottom: 2}}>
                 <TextField
                     required={true}
-                    label="Tasa de Interes (Anual)"
+                    label="Tasa de Interes (Mensual)"
                     variant="outlined"
                     value={interestRate}
                     onChange={e => {
@@ -100,7 +100,7 @@ const Simulator = () => {
 
             <hr/>
 
-            <h2>Cuota Mensual: {monthlyFee}</h2>
+            <h2>Cuota Mensual: ${monthlyFee}</h2>
 
             <Button
                 variant="contained"

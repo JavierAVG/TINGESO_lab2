@@ -14,7 +14,7 @@ public class StatusEntity {
     @Id
     @Column(unique = true, nullable = false)
     private Long id;        // same as loanid
-    private String state;   // Documentation pending - In evaluation - Pre-approved - Approved - Rejected - Canceled
+    private String state;   // Pendiente de Documentación - En evaluación - Pre-aprobado - Aprobado - Rechazado - Cancelado
     private int monthlyfee;
     private int creditlifeinsurance;
     private int fireinsurance;

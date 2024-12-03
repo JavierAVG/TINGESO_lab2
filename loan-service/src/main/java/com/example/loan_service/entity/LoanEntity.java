@@ -15,6 +15,7 @@ public class LoanEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
     private Long id;
+    private Long clientid;
 
     private String type;                // First home - Second home - Commercial properties - Remodeling
     private int duration;               // in years
