@@ -3,6 +3,12 @@ import {useState} from "react";
 import loanService from "../services/loan.service.js";
 import {Box, Button, FormControl, FormLabel, MenuItem, Select, TextField} from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
+import TableContainer from "@mui/material/TableContainer";
+import Table from "@mui/material/Table";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import TableCell from "@mui/material/TableCell";
+import TableBody from "@mui/material/TableBody";
 
 const AddLoan = () => {
     const {clientId} = useParams();
@@ -16,7 +22,6 @@ const AddLoan = () => {
     const [propertyValue, setPropertyValue] = useState("");                      // valor de la propiedad
     const [accumulatedSalary, setAccumulatedSalary] = useState("");              // salario acumulado
     const [savingsAccountLongevity, setSavingsAccountLongevity] = useState("");  // antigüedad de la cuenta de ahorros
-    const [loanDate, setLoanDate] = useState(null);                                     // fecha de solicitud del crédito
 
     const [docDicomHistory, setDocDicomHistory] = useState(null);                       // historial Dicom
     const [docIncomeProof, setDocIncomeProof] = useState(null);                         // comprobante de ingresos
@@ -27,15 +32,19 @@ const AddLoan = () => {
     const [docBusinessPlan, setDocBusinessPlan] = useState(null);                       // plan de negocio
     const [docRemodelingBudget, setDocRemodelingBudget] = useState(null);               // presupuesto de remodelación
 
-    const [loanId, setLoanId] = useState(null);
-
+    const [rows, setRows] = useState(Array.from({ length: 12 }, () => ({
+        id: null,
+        salary: 0,
+        withdrawal: 0,
+        deposit: 0
+    })));
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
         if (!await handleCheckDocuments()) { return }
 
-        setLoanDate(new Date().toISOString().split('T')[0]);
+        const loanDate = new Date().toISOString().split('T')[0]
         const loan = {
             clientid: clientId,
             type: type,
@@ -54,13 +63,28 @@ const AddLoan = () => {
         try {
             const response = await loanService.save(loan);
             console.log("Loan saved successfully", response.data);
-            setLoanId(response.data.id);
+
+            // Subir los documentos
+            await handleSubmitDocuments(response.data.id);
+
+            // Subir los datos de la cuenta de ahorro
+            const savingsAccount = {
+                loanid: response.data.id,
+                withdrawals: rows.map(row => row.withdrawal),
+                deposits: rows.map(row => row.deposit),
+                salaries: rows.map(row => row.salary)
+            }
+            loanService.saveSavings(savingsAccount).then(response => {
+                console.log("Savings account saved successfully", response.data);
+            }).catch(error => {
+                console.error("Error saving savings account", error);
+            });
         } catch (error) {
             console.error("Error saving loan", error);
             return;
         }
 
-        await handleSubmitDocuments();
+
     };
 
     const handleCheckDocuments = async () => {
@@ -85,11 +109,10 @@ const AddLoan = () => {
             alert("Debe subir el presupuesto de remodelación");
             return false;
         }
-
         return true;
     }
 
-    const handleSubmitDocuments = async () => {
+    const handleSubmitDocuments = async (loanId) => {
         // Subir los documentos
         try {
             const response = await loanService.saveDocument(loanId, "Historial DICOM", docDicomHistory);
@@ -138,14 +161,27 @@ const AddLoan = () => {
         }
     }
 
+    const handleTableChange = (index, column, value) => {
+        const updatedRows = [...rows];
+        if (/^\d*$/.test(value)){
+            updatedRows[index][column] = value === "" ? 0 : parseInt(value, 10);
+            setRows(updatedRows);
+        }
+    };
+
     return (
         <Box
             component="form"
             onSubmit={handleSubmit}
             alignItems="center"
-            sx={{height: "calc(100vh - 64px)", maxWidth: 600, margin: '0 auto', marginTop: "64px"}} // Establece un ancho máximo fijo y centra el formulario
+            sx={{
+                height: "calc(100vh - 64px)",
+                maxWidth: 600,
+                margin: '0 auto',
+                marginTop: "64px"
+            }} // Establece un ancho máximo fijo y centra el formulario
         >
-            <h1>Agregar Cliente</h1>
+            <h1>Solicitar Crédito</h1>
             <hr/>
 
             <FormControl fullWidth sx={{marginBottom: 2}}>
@@ -323,6 +359,49 @@ const AddLoan = () => {
                     }}
                 />
             </FormControl>
+
+            <h3>Cuenta de Ahorro</h3>
+
+            Complete la siguiente tabla con los salarios, retiros y depósitos correspondientes de su cuenta de ahorro
+            durante los últimos 12 meses. Asegúrese de que estén en orden desde el mes más antiguo al más reciente.
+
+            <TableContainer>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell align="center">Mes</TableCell>
+                            <TableCell align="center">Salario</TableCell>
+                            <TableCell align="center">Retiro</TableCell>
+                            <TableCell align="center">Depósito</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {rows.map((row, index) => (
+                            <TableRow key={index}>
+                                <TableCell align="center">{index + 1}</TableCell>
+                                <TableCell align="center">
+                                    <TextField
+                                        value={row.salary}
+                                        onChange={(e) => handleTableChange(index, "salary", e.target.value)}
+                                    />
+                                </TableCell>
+                                <TableCell align="center">
+                                    <TextField
+                                        value={row.withdrawal}
+                                        onChange={(e) => handleTableChange(index, "withdrawal", e.target.value)}
+                                    />
+                                </TableCell>
+                                <TableCell align="center">
+                                    <TextField
+                                        value={row.deposit}
+                                        onChange={(e) => handleTableChange(index, "deposit", e.target.value)}
+                                    />
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
 
             <hr/>
             <FormControl fullWidth sx={{marginBottom: 10}}>

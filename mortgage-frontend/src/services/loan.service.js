@@ -33,4 +33,8 @@ const getDocumentsByLoanId = (loanid) => {
     return httpClient.get(`/loan/document/getallbyloanid/${loanid}`);
 }
 
-export default { save, get, getAll, getAllByClientId, saveDocument, getDocumentsByLoanId };
+const saveSavings = (data) => {
+    return httpClient.post("loan/savings/save", data);
+}
+
+export default { save, get, getAll, getAllByClientId, saveDocument, getDocumentsByLoanId, saveSavings };
