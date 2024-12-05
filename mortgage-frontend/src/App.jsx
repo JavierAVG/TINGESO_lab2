@@ -25,7 +25,7 @@ function App() {
                     <Route path="/client/:idClient/loanlist" element={<LoanList />} />
                     <Route path="/loans" element={<LoanList />} />
                     <Route path="/loan/:id/costs" element={<LoanCosts />} />
-                    <Route path="/loan/:id/evaluate" element={<EvaluateLoan />} />
+                    <Route path="/loan/:loanId/evaluate" element={<EvaluateLoan />} />
                     <Route path="/client/:clientId/addloan" element={<AddLoan />} />
                 </Routes>
             </div>
