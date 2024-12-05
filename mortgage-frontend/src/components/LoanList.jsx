@@ -134,17 +134,6 @@ const LoanList = () => {
                                             </Button>
                                         </>
                                     )}
-                                    {!idClient && (
-                                        <Button
-                                            variant="contained"
-                                            size="small"
-                                            onClick={() => navigate(`/loan/${loan.id}/evaluate`)}
-                                            style={{ marginLeft: "0.5rem" }}
-                                            startIcon={<ReceiptLongIcon />}
-                                        >
-                                            Evaluar
-                                        </Button>
-                                    )}
                                     {idClient && statuses.find(status => status.id === loan.id)?.state === "Pre-Aprobado" && (
                                         <Button
                                             variant="contained"
@@ -155,6 +144,17 @@ const LoanList = () => {
                                             startIcon={<ThumbUpOffAltIcon />}
                                         >
                                             Aprobar
+                                        </Button>
+                                    )}
+                                    {!idClient && (
+                                        <Button
+                                            variant="contained"
+                                            size="small"
+                                            onClick={() => navigate(`/loan/${loan.id}/evaluate`)}
+                                            style={{ marginLeft: "0.5rem" }}
+                                            startIcon={<ReceiptLongIcon />}
+                                        >
+                                            Evaluar
                                         </Button>
                                     )}
                                 </TableCell>

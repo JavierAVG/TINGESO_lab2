@@ -6,6 +6,7 @@ function Navbar() {
 
     const handleHomeClick = () => { navigate('/') };
     const handleClientsClick = () => { navigate('/clients') };
+    const handleLoansClick = () => { navigate('/loans') };
 
     return (
         <Box sx={{ width: '100%' }}>
@@ -16,6 +17,9 @@ function Navbar() {
                     </Button>
                     <Button color="inherit" onClick={handleClientsClick}>
                         <Typography variant="h6">Clientes</Typography>
+                    </Button>
+                    <Button color="inherit" onClick={handleLoansClick}>
+                        <Typography variant="h6">Créditos</Typography>
                     </Button>
                 </Toolbar>
             </AppBar>

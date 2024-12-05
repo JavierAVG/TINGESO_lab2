@@ -20,6 +20,15 @@ public class LoanController {
         return ResponseEntity.ok(loanService.save(loan));
     }
 
+    @GetMapping("/get/{id}")
+    public ResponseEntity<LoanEntity> getLoan(@PathVariable("id") Integer id) {
+        LoanEntity loan = loanService.getLoan(id);
+        if (loan == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(loan);
+    }
+
     @GetMapping("/getall")
     public ResponseEntity<List<LoanEntity>> getLoans() {
         List<LoanEntity> loans = loanService.getLoans();

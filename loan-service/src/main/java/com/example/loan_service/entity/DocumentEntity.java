@@ -20,5 +20,5 @@ public class DocumentEntity {
     private String name;
     @Lob
     private byte[] file;
-    private String validity;
+    private boolean validity;
 }

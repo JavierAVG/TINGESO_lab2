@@ -35,6 +35,10 @@ public class LoanService {
         return newloan;
     }
 
+    public LoanEntity getLoan(Integer id) {
+        return loanRepository.findById(id).orElse(null);
+    }
+
     public List<LoanEntity> getLoans() {
         return loanRepository.findAll();
     }

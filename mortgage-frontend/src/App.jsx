@@ -8,6 +8,8 @@ import ClientPage from "./components/ClientPage.jsx";
 import Simulator from "./components/Simulator.jsx";
 import LoanList from "./components/LoanList.jsx";
 import LoanCosts from "./components/LoanCosts.jsx";
+import EvaluateLoan from "./components/EvaluateLoan.jsx";
+import AddLoan from "./components/AddLoan.jsx";
 
 function App() {
     return (
@@ -23,6 +25,8 @@ function App() {
                     <Route path="/client/:idClient/loanlist" element={<LoanList />} />
                     <Route path="/loans" element={<LoanList />} />
                     <Route path="/loan/:id/costs" element={<LoanCosts />} />
+                    <Route path="/loan/:id/evaluate" element={<EvaluateLoan />} />
+                    <Route path="/client/:clientId/addloan" element={<AddLoan />} />
                 </Routes>
             </div>
         </BrowserRouter>

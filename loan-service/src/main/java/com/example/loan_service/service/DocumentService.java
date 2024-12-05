@@ -5,6 +5,8 @@ import com.example.loan_service.repository.DocumentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
 @Service
 public class DocumentService {
     @Autowired
@@ -12,5 +14,13 @@ public class DocumentService {
 
     public DocumentEntity save(DocumentEntity document) {
         return documentRepository.save(document);
+    }
+
+    public DocumentEntity getDocument(Integer id) {
+        return documentRepository.findById(id).orElse(null);
+    }
+
+    public ArrayList<DocumentEntity> getDocumentsByLoanId(Long id) {
+        return documentRepository.findByLoanid(id);
     }
 }

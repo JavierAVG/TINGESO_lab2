@@ -31,7 +31,9 @@ const Simulator = () => {
         <Box
             component="form"
             onSubmit={handleSimulate}
-            alignItems="center">
+            alignItems="center"
+            sx={{ maxWidth: 600, margin: '0 auto' }} // Establece un ancho máximo fijo y centra el formulario
+        >
             <h1>Simular Crédito</h1>
             <hr/>
 
@@ -46,7 +48,7 @@ const Simulator = () => {
                     sx={{ minWidth: 200 }} // Establece un ancho mínimo fijo
                 >
                     <MenuItem value="primeravivienda">Primera Vivienda</MenuItem>
-                    <MenuItem value="segunadavivienda">Segunda Vivienda</MenuItem>
+                    <MenuItem value="segundavivienda">Segunda Vivienda</MenuItem>
                     <MenuItem value="propiedadescomerciales">Propiedades Comerciales</MenuItem>
                     <MenuItem value="Remodelacion">Remodelación</MenuItem>
                 </Select>
