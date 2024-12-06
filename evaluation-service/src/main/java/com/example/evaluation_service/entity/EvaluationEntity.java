@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EvaluationEntity {
-    private int annualInterest;
+    private double annualInterest;
     private int monthlyIncome;
     private boolean dicom;
     private int employmentLongevity;

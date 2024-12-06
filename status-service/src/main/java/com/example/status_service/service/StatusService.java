@@ -27,9 +27,6 @@ public class StatusService {
 
     public StatusEntity updateState(Long id, String state) {
         StatusEntity statusEntity = statusRepository.findById(id).orElse(null);
-        if (statusEntity == null) {
-            return null;
-        }
         statusEntity.setState(state);
         return statusRepository.save(statusEntity);
     }
