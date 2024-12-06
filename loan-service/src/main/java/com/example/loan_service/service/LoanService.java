@@ -39,7 +39,7 @@ public class LoanService {
         return loanRepository.save(loan);
     }
 
-    public LoanEntity getLoan(Integer id) {
+    public LoanEntity getLoan(Long id) {
         return loanRepository.findById(id).orElse(null);
     }
 
@@ -47,7 +47,7 @@ public class LoanService {
         return loanRepository.findAll();
     }
 
-    public ArrayList<LoanEntity>  getLoansByClientId(Long id){
-        return (ArrayList<LoanEntity>) loanRepository.findByClientid(id);
+    public List<LoanEntity>  getLoansByClientId(Long id){
+        return loanRepository.findByClientid(id);
     }
 }

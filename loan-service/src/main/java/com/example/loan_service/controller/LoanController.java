@@ -26,7 +26,7 @@ public class LoanController {
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<LoanEntity> getLoan(@PathVariable("id") Integer id) {
+    public ResponseEntity<LoanEntity> getLoan(@PathVariable("id") Long id) {
         LoanEntity loan = loanService.getLoan(id);
         if (loan == null) {
             return ResponseEntity.notFound().build();

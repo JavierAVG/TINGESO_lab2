@@ -23,7 +23,7 @@ public class EvaluationServiceTest {
     }
 
     @Test
-    void whenEvaluate_thenCorrect() {
+    void whenEvaluate_thenFullList() {
         // given
         EvaluationEntity evaluationEntity = new EvaluationEntity();
         evaluationEntity.setAnnualInterest(4.5);
@@ -46,7 +46,30 @@ public class EvaluationServiceTest {
     }
 
     @Test
-    void whenEvaluateWithSecondEntity_thenEmptyList() {
+    void whenEvaluate_thenEmptyList() {
+        // given
+        EvaluationEntity evaluationEntity = new EvaluationEntity();
+        evaluationEntity.setAnnualInterest(4.5);
+        evaluationEntity.setMonthlyIncome(1500000);
+        evaluationEntity.setDicom(true);
+        evaluationEntity.setEmploymentLongevity(5);
+        evaluationEntity.setTotalDebt(400000);
+        evaluationEntity.setLoanType("Primera Vivienda");
+        evaluationEntity.setLoanAmount(80000000);
+        evaluationEntity.setPropertyValue(120000000);
+        evaluationEntity.setClientBirthdate(LocalDate.of(1990, 1, 15));
+        evaluationEntity.setLoanDate(LocalDate.of(2024, 12, 1));
+        evaluationEntity.setLoanTerm(20);
+
+        // when
+        List<String> result = evaluationService.evaluate(evaluationEntity);
+
+        // then
+        assertEquals(List.of(), result);
+    }
+
+    @Test
+    void whenEvaluateWithSegundaViviendaAndHighFundingPercentage_thenR5() {
         // given
         EvaluationEntity evaluationEntity = new EvaluationEntity();
         evaluationEntity.setAnnualInterest(4.5);
@@ -56,7 +79,122 @@ public class EvaluationServiceTest {
         evaluationEntity.setTotalDebt(400000);
         evaluationEntity.setLoanType("Segunda Vivienda");
         evaluationEntity.setLoanAmount(80000000);
+        evaluationEntity.setPropertyValue(100000000);
+        evaluationEntity.setClientBirthdate(LocalDate.of(1990, 1, 15));
+        evaluationEntity.setLoanDate(LocalDate.of(2024, 12, 1));
+        evaluationEntity.setLoanTerm(20);
+
+        // when
+        List<String> result = evaluationService.evaluate(evaluationEntity);
+
+        // then
+        assertEquals(List.of("R5"), result);
+    }
+
+    @Test
+    void whenEvaluateWithSegundaViviendaAndLowFundingPercentage_thenNoR5() {
+        // given
+        EvaluationEntity evaluationEntity = new EvaluationEntity();
+        evaluationEntity.setAnnualInterest(4.5);
+        evaluationEntity.setMonthlyIncome(1500000);
+        evaluationEntity.setDicom(true);
+        evaluationEntity.setEmploymentLongevity(5);
+        evaluationEntity.setTotalDebt(400000);
+        evaluationEntity.setLoanType("Segunda Vivienda");
+        evaluationEntity.setLoanAmount(80000000);
+        evaluationEntity.setPropertyValue(190000000);
+        evaluationEntity.setClientBirthdate(LocalDate.of(1990, 1, 15));
+        evaluationEntity.setLoanDate(LocalDate.of(2024, 12, 1));
+        evaluationEntity.setLoanTerm(20);
+
+        // when
+        List<String> result = evaluationService.evaluate(evaluationEntity);
+
+        // then
+        assertEquals(List.of(), result);
+    }
+
+    @Test
+    void whenEvaluateWithPropiedadesComercialesAndHighFundingPercentage_thenR5() {
+        // given
+        EvaluationEntity evaluationEntity = new EvaluationEntity();
+        evaluationEntity.setAnnualInterest(4.5);
+        evaluationEntity.setMonthlyIncome(1500000);
+        evaluationEntity.setDicom(true);
+        evaluationEntity.setEmploymentLongevity(5);
+        evaluationEntity.setTotalDebt(400000);
+        evaluationEntity.setLoanType("Propiedades Comerciales");
+        evaluationEntity.setLoanAmount(80000000);
         evaluationEntity.setPropertyValue(120000000);
+        evaluationEntity.setClientBirthdate(LocalDate.of(1990, 1, 15));
+        evaluationEntity.setLoanDate(LocalDate.of(2024, 12, 1));
+        evaluationEntity.setLoanTerm(20);
+
+        // when
+        List<String> result = evaluationService.evaluate(evaluationEntity);
+
+        // then
+        assertEquals(List.of("R5"), result);
+    }
+
+    @Test
+    void whenEvaluateWithPropiedadesComercialesAndLowFundingPercentage_thenNoR5() {
+        // given
+        EvaluationEntity evaluationEntity = new EvaluationEntity();
+        evaluationEntity.setAnnualInterest(4.5);
+        evaluationEntity.setMonthlyIncome(1500000);
+        evaluationEntity.setDicom(true);
+        evaluationEntity.setEmploymentLongevity(5);
+        evaluationEntity.setTotalDebt(400000);
+        evaluationEntity.setLoanType("Propiedades Comerciales");
+        evaluationEntity.setLoanAmount(80000000);
+        evaluationEntity.setPropertyValue(190000000);
+        evaluationEntity.setClientBirthdate(LocalDate.of(1990, 1, 15));
+        evaluationEntity.setLoanDate(LocalDate.of(2024, 12, 1));
+        evaluationEntity.setLoanTerm(20);
+
+        // when
+        List<String> result = evaluationService.evaluate(evaluationEntity);
+
+        // then
+        assertEquals(List.of(), result);
+    }
+
+    @Test
+    void whenEvaluateWithRemodelacionAndHighFundingPercentage_thenR5() {
+        // given
+        EvaluationEntity evaluationEntity = new EvaluationEntity();
+        evaluationEntity.setAnnualInterest(4.5);
+        evaluationEntity.setMonthlyIncome(1500000);
+        evaluationEntity.setDicom(true);
+        evaluationEntity.setEmploymentLongevity(5);
+        evaluationEntity.setTotalDebt(400000);
+        evaluationEntity.setLoanType("Remodelación");
+        evaluationEntity.setLoanAmount(80000000);
+        evaluationEntity.setPropertyValue(120000000);
+        evaluationEntity.setClientBirthdate(LocalDate.of(1990, 1, 15));
+        evaluationEntity.setLoanDate(LocalDate.of(2024, 12, 1));
+        evaluationEntity.setLoanTerm(20);
+
+        // when
+        List<String> result = evaluationService.evaluate(evaluationEntity);
+
+        // then
+        assertEquals(List.of("R5"), result);
+    }
+
+    @Test
+    void whenEvaluateWithRemodelacionAndLowFundingPercentage_thenNoR5() {
+        // given
+        EvaluationEntity evaluationEntity = new EvaluationEntity();
+        evaluationEntity.setAnnualInterest(4.5);
+        evaluationEntity.setMonthlyIncome(1500000);
+        evaluationEntity.setDicom(true);
+        evaluationEntity.setEmploymentLongevity(5);
+        evaluationEntity.setTotalDebt(400000);
+        evaluationEntity.setLoanType("Remodelación");
+        evaluationEntity.setLoanAmount(80000000);
+        evaluationEntity.setPropertyValue(190000000);
         evaluationEntity.setClientBirthdate(LocalDate.of(1990, 1, 15));
         evaluationEntity.setLoanDate(LocalDate.of(2024, 12, 1));
         evaluationEntity.setLoanTerm(20);

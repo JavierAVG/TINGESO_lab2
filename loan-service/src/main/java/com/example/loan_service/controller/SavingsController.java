@@ -41,8 +41,8 @@ public class SavingsController {
     }
 
     @GetMapping("/getallbyloanid/{id}")
-    public ResponseEntity<ArrayList<SavingEntity>> getAllByIdLoan(@PathVariable("id") Long id) {
-        ArrayList<SavingEntity> savings = savingsService.getAllByIdLoan(id);
+    public ResponseEntity<List<SavingEntity>> getAllByIdLoan(@PathVariable("id") Long id) {
+        List<SavingEntity> savings = savingsService.getAllByIdLoan(id);
         return ResponseEntity.ok(savings);
     }
 }

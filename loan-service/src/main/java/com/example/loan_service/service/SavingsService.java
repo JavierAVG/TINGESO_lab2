@@ -43,7 +43,7 @@ public class SavingsService {
         return "Savings correctly updated";
     }
 
-    public ArrayList<SavingEntity> getAllByIdLoan(Long id){
-        return (ArrayList<SavingEntity>) savingsRepository.findByLoanid(id);
+    public List<SavingEntity> getAllByIdLoan(Long id){
+        return savingsRepository.findByLoanid(id);
     }
 }
