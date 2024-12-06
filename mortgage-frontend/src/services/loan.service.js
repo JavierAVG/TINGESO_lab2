@@ -4,8 +4,8 @@ const save = data => {
     return httpClient.post("/loan/save", data);
 }
 
-const update = (id, data) => {
-    return httpClient.put(`/loan/update/${id}`, data);
+const update = data => {
+    return httpClient.put("/loan/update", data);
 }
 
 const get = id => {
@@ -41,4 +41,12 @@ const saveSavings = (data) => {
     return httpClient.post("loan/savings/save", data);
 }
 
-export default { save, update, get, getAll, getAllByClientId, saveDocument, getDocumentsByLoanId, saveSavings };
+const getSavingsByLoanId = (loanid) => {
+    return httpClient.get(`/loan/savings/getallbyloanid/${loanid}`);
+}
+
+const updateSavings = (data) => {
+    return httpClient.put("/loan/savings/update", data);
+}
+
+export default { save, update, get, getAll, getAllByClientId, saveDocument, getDocumentsByLoanId, saveSavings, getSavingsByLoanId, updateSavings };

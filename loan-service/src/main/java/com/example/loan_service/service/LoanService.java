@@ -35,6 +35,10 @@ public class LoanService {
         return newloan;
     }
 
+    public LoanEntity update(LoanEntity loan) {
+        return loanRepository.save(loan);
+    }
+
     public LoanEntity getLoan(Integer id) {
         return loanRepository.findById(id).orElse(null);
     }

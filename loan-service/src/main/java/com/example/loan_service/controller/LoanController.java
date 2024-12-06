@@ -20,6 +20,11 @@ public class LoanController {
         return ResponseEntity.ok(loanService.save(loan));
     }
 
+    @PutMapping("/update")
+    public ResponseEntity<LoanEntity> update(@RequestBody LoanEntity loan) {
+        return ResponseEntity.ok(loanService.update(loan));
+    }
+
     @GetMapping("/get/{id}")
     public ResponseEntity<LoanEntity> getLoan(@PathVariable("id") Integer id) {
         LoanEntity loan = loanService.getLoan(id);

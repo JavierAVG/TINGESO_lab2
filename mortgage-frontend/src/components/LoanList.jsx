@@ -9,7 +9,7 @@ import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableBody from "@mui/material/TableBody";
-import {Button} from "@mui/material";
+import {Box, Button} from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
@@ -89,80 +89,86 @@ const LoanList = () => {
 
     return (
         <div>
-            <h1>{title}</h1>
+            <Box sx={{
+                height: "calc(100vh - 100px)",
+                margin: '0 auto',
+                marginTop: "64px"
+            }}>
+                <h1>{title}</h1>
 
-            <TableContainer component={Paper}>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Id Cliente</TableCell>
-                            <TableCell>Id</TableCell>
-                            <TableCell>Monto</TableCell>
-                            <TableCell>Tipo</TableCell>
-                            <TableCell>Estado</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {loans.map(loan => (
-                            <TableRow key={loan.id}>
-                                <TableCell>{loan.clientid}</TableCell>
-                                <TableCell>{loan.id}</TableCell>
-                                <TableCell>{loan.amount}</TableCell>
-                                <TableCell>{loan.type}</TableCell>
-                                <TableCell>{statuses.find(status => status.id === loan.id)?.state}</TableCell>
-                                <TableCell>
-                                    {idClient && (
-                                        <>
-                                            <Button
-                                                variant="contained"
-                                                color="error"
-                                                size="small"
-                                                onClick={() => handleCancel(loan.id)}
-                                                style={{ marginLeft: "0.5rem" }}
-                                                startIcon={<DeleteIcon />}
-                                            >
-                                                Cancelar
-                                            </Button>
-                                            <Button
-                                                variant="contained"
-                                                size="small"
-                                                onClick={() => navigate(`/loan/${loan.id}/costs`)}
-                                                style={{ marginLeft: "0.5rem" }}
-                                                startIcon={<AttachMoneyIcon />}
-                                            >
-                                                Costos
-                                            </Button>
-                                        </>
-                                    )}
-                                    {idClient && statuses.find(status => status.id === loan.id)?.state === "Pre-Aprobado" && (
-                                        <Button
-                                            variant="contained"
-                                            color="success"
-                                            size="small"
-                                            onClick={() => handleApprove(loan.id)}
-                                            style={{ marginLeft: "0.5rem" }}
-                                            startIcon={<ThumbUpOffAltIcon />}
-                                        >
-                                            Aprobar
-                                        </Button>
-                                    )}
-                                    {!idClient && (
-                                        <Button
-                                            variant="contained"
-                                            size="small"
-                                            onClick={() => navigate(`/loan/${loan.id}/evaluate`)}
-                                            style={{ marginLeft: "0.5rem" }}
-                                            startIcon={<ReceiptLongIcon />}
-                                        >
-                                            Evaluar
-                                        </Button>
-                                    )}
-                                </TableCell>
+                <TableContainer component={Paper}>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Id Cliente</TableCell>
+                                <TableCell>Id</TableCell>
+                                <TableCell>Monto</TableCell>
+                                <TableCell>Tipo</TableCell>
+                                <TableCell>Estado</TableCell>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+                        </TableHead>
+                        <TableBody>
+                            {loans.map(loan => (
+                                <TableRow key={loan.id}>
+                                    <TableCell>{loan.clientid}</TableCell>
+                                    <TableCell>{loan.id}</TableCell>
+                                    <TableCell>{loan.amount}</TableCell>
+                                    <TableCell>{loan.type}</TableCell>
+                                    <TableCell>{statuses.find(status => status.id === loan.id)?.state}</TableCell>
+                                    <TableCell>
+                                        {idClient && (
+                                            <>
+                                                <Button
+                                                    variant="contained"
+                                                    color="error"
+                                                    size="small"
+                                                    onClick={() => handleCancel(loan.id)}
+                                                    style={{marginLeft: "0.5rem"}}
+                                                    startIcon={<DeleteIcon/>}
+                                                >
+                                                    Cancelar
+                                                </Button>
+                                                <Button
+                                                    variant="contained"
+                                                    size="small"
+                                                    onClick={() => navigate(`/loan/${loan.id}/costs`)}
+                                                    style={{marginLeft: "0.5rem"}}
+                                                    startIcon={<AttachMoneyIcon/>}
+                                                >
+                                                    Costos
+                                                </Button>
+                                            </>
+                                        )}
+                                        {idClient && statuses.find(status => status.id === loan.id)?.state === "Pre-Aprobado" && (
+                                            <Button
+                                                variant="contained"
+                                                color="success"
+                                                size="small"
+                                                onClick={() => handleApprove(loan.id)}
+                                                style={{marginLeft: "0.5rem"}}
+                                                startIcon={<ThumbUpOffAltIcon/>}
+                                            >
+                                                Aprobar
+                                            </Button>
+                                        )}
+                                        {!idClient && (
+                                            <Button
+                                                variant="contained"
+                                                size="small"
+                                                onClick={() => navigate(`/loan/${loan.id}/evaluate`)}
+                                                style={{marginLeft: "0.5rem"}}
+                                                startIcon={<ReceiptLongIcon/>}
+                                            >
+                                                Evaluar
+                                            </Button>
+                                        )}
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Box>
         </div>
     )
 }

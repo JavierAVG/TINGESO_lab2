@@ -16,10 +16,6 @@ public class DocumentService {
         return documentRepository.save(document);
     }
 
-    public DocumentEntity getDocument(Integer id) {
-        return documentRepository.findById(id).orElse(null);
-    }
-
     public ArrayList<DocumentEntity> getDocumentsByLoanId(Long id) {
         return documentRepository.findByLoanid(id);
     }

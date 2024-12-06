@@ -79,6 +79,8 @@ const AddLoan = () => {
             }).catch(error => {
                 console.error("Error saving savings account", error);
             });
+
+            alert("Crédito solicitado exitosamente");
         } catch (error) {
             console.error("Error saving loan", error);
             return;

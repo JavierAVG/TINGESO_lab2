@@ -6,6 +6,12 @@ import clientService from "../services/client.service.js";
 import SaveIcon from "@mui/icons-material/Save";
 import statusService from "../services/status.service.js";
 import evaluateService from "../services/evaluate.service.js";
+import Table from "@mui/material/Table";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import TableCell from "@mui/material/TableCell";
+import TableBody from "@mui/material/TableBody";
+import TableContainer from "@mui/material/TableContainer";
 
 const EvaluateLoan = () => {
     const navigate = useNavigate();
@@ -26,11 +32,19 @@ const EvaluateLoan = () => {
     const [savingsAccountLongevity, setSavingsAccountLongevity] = useState("");  // antigüedad de la cuenta de ahorros *
     const [dicom, setDicom] = useState(false);                                  // DICOM *
 
+    const [clientName, setClientName] = useState("");                            // nombre del cliente
+    const [clientRut, setClientRut] = useState("");                              // rut del cliente
+    const [clientBirthdate, setClientBirthdate] = useState("");                  // fecha de nacimiento del cliente
+
     const [documents, setDocuments] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
 
-    const [clientBirthdate, setClientBirthdate] = useState("");                  // fecha de nacimiento del cliente
+    const [rows, setRows] = useState(Array.from({ length: 12 }, () => ({
+        id: null,
+        salary: 0,
+        withdrawal: 0,
+        deposit: 0
+    })));
 
     const [evaluationResponse, setEvaluationResponse] = useState([""]);
 
@@ -52,6 +66,9 @@ const EvaluateLoan = () => {
             setLoanDate(loan.loandate);
 
             clientService.get(loan.clientid).then(response => {
+                console.log("Client found.", response.data);
+                setClientName(response.data.name);
+                setClientRut(response.data.rut);
                 setClientBirthdate(response.data.birthdate);
             }).catch(error => {
                 console.error("Error fetching client", error);
@@ -60,8 +77,22 @@ const EvaluateLoan = () => {
             console.error("Error fetching loan", error);
         });
 
+        fetchSavingsAccount();
+
         fetchDocuments();
     }, [loanId]);
+
+    const fetchSavingsAccount = () => {
+        loanService.getSavingsByLoanId(loanId).then(response => {
+            const updatedRows = response.data.map((months) => ({
+                id: months.id,
+                salary: months.salary,
+                withdrawal: months.withdrawal,
+                deposit: months.deposit
+            }));
+            setRows(updatedRows);
+        }).catch((error) => { console.error("Failed to fetch savings accounts", error); });
+    };
 
     const fetchDocuments = async () => {
         try {
@@ -101,11 +132,25 @@ const EvaluateLoan = () => {
             savingsaccountlongevity: savingsAccountLongevity,
             loandate: loanDate
         }
-
         try {
-            const response = await loanService.save(loan);
-            console.log("Loan saved successfully", response.data);
-        } catch (error) { console.error("Error saving loan", error); }
+            const response = await loanService.update(loan);
+            console.log("Loan updated.", response.data);
+            alert("Crédito actualizado correctamente.");
+        } catch (error) { console.error("Error updating loan", error); }
+
+        const savingsAccount = {
+            loanid: loanId,
+            ids: rows.map(row => row.id),
+            withdrawals: rows.map(row => row.withdrawal),
+            deposits: rows.map(row => row.deposit),
+            salaries: rows.map(row => row.salary)
+        }
+        loanService.updateSavings(savingsAccount).then(response => {
+            console.log("Savings account updated.", response.data);
+            alert("Cuentas de ahorro actualizadas correctamente.");
+        }).catch(error => {
+            console.error("Error updating savings account", error);
+        });
     }
 
     const handleEvaluate = async () => {
@@ -150,6 +195,14 @@ const EvaluateLoan = () => {
         }
     }
 
+    const handleTableChange = (index, column, value) => {
+        const updatedRows = [...rows];
+        if (/^\d*$/.test(value)){
+            updatedRows[index][column] = value === "" ? 0 : parseInt(value, 10);
+            setRows(updatedRows);
+        }
+    };
+
     if (loading) {
         return (
             <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
@@ -161,7 +214,6 @@ const EvaluateLoan = () => {
     return (
         <Box
             component="form"
-            onSubmit={handleSave}
             alignItems="center"
             sx={{
                 height: "calc(100vh - 64px)",   // Restar la altura de la Navbar
@@ -174,168 +226,22 @@ const EvaluateLoan = () => {
             <h1>Evaluación de Crédito</h1>
             <hr/>
 
-            <h2>Tipo: {type}</h2>
+            <h3>Cliente: {clientName}</h3>
+            <ul>
+                <li>Rut: {clientRut}</li>
+                <li>Fecha de Nacimiento: {clientBirthdate}</li>
+            </ul>
 
-            <h3>Monto: {amount}</h3>
-            <h3>Tasa de Interés Anual: {interestRate}</h3>
-            <h3>Duración: {duration}</h3>
+            <h3>Tipo: {type}</h3>
+            <ul>
+                <li>Monto: {amount}</li>
+                <li>Tasa de Interés Anual: {interestRate}</li>
+                <li>Duración: {duration}</li>
+            </ul>
             <hr/>
-
-            <FormControl fullWidth sx={{marginBottom: 2}}>
-                <TextField
-                    required={true}
-                    label="Ingreso Mensual"
-                    variant="outlined"
-                    value={monthlyIncome}
-                    onChange={e => {
-                        if (/^\d*$/.test(e.target.value) && e.target.value <= 999999999) setMonthlyIncome(e.target.value)
-                    }}
-                />
-            </FormControl>
-
-            <FormControl fullWidth sx={{marginBottom: 2}}>
-                <TextField
-                    required={true}
-                    label="Antigüedad Laboral"
-                    variant="outlined"
-                    value={employmentLongevity}
-                    onChange={e => {
-                        if (/^\d*$/.test(e.target.value) && e.target.value <= 50) setEmploymentLongevity(e.target.value)
-                    }}
-                />
-            </FormControl>
-
-            <FormControl fullWidth sx={{marginBottom: 2}}>
-                <TextField
-                    required={true}
-                    label="Deuda Total"
-                    variant="outlined"
-                    value={totalDebt}
-                    onChange={e => {
-                        if (/^\d*$/.test(e.target.value) && e.target.value <= 999999999) setTotalDebt(e.target.value)
-                    }}
-                />
-            </FormControl>
-
-            <FormControl fullWidth sx={{marginBottom: 2}}>
-                <TextField
-                    required={true}
-                    label="Valor de la Propiedad"
-                    variant="outlined"
-                    value={propertyValue}
-                    onChange={e => {
-                        if (/^\d*$/.test(e.target.value) && e.target.value <= 999999999) setPropertyValue(e.target.value)
-                    }}
-                />
-            </FormControl>
-
-            <FormControl fullWidth sx={{marginBottom: 2}}>
-                <TextField
-                    required={true}
-                    label="Salario Acumulado"
-                    variant="outlined"
-                    value={accumulatedSalary}
-                    onChange={e => {
-                        if (/^\d*$/.test(e.target.value) && e.target.value <= 999999999) setAccumulatedSalary(e.target.value)
-                    }}
-                />
-            </FormControl>
-
-            <FormControl fullWidth sx={{marginBottom: 2}}>
-                <TextField
-                    required={true}
-                    label="Antigüedad de la Cuenta de Ahorros"
-                    variant="outlined"
-                    value={savingsAccountLongevity}
-                    onChange={e => {
-                        if (/^\d*$/.test(e.target.value) && e.target.value <= 50) setSavingsAccountLongevity(e.target.value)
-                    }}
-                />
-            </FormControl>
-
-            <FormControl fullWidth sx={{marginBottom: 2}}>
-                <FormControlLabel
-                    control={
-                        <Checkbox
-                            checked={dicom}
-                            onChange={(e) => setDicom(e.target.checked)}
-                            name="dicom"
-                            color="primary"
-                        />
-                    }
-                    label="DICOM"
-                />
-            </FormControl>
-
-            {documents.filter(doc => doc.name === "Historial DICOM")
-                .map((doc, index) => (
-                    <Box key={index} sx={{marginBottom: 2}}>
-                        <h3>{doc.name}</h3>
-                        <iframe
-                            src={doc.url}
-                            width="800px"
-                            height="500px"
-                            title={doc.name}
-                        ></iframe>
-                    </Box>))
-            }
-
-            {documents.filter(doc => doc.name === "Comprobante de Ingresos")
-                .map((doc, index) => (
-                    <Box key={index} sx={{marginBottom: 2}}>
-                        <h3>{doc.name}</h3>
-                        <iframe
-                            src={doc.url}
-                            width="800px"
-                            height="500px"
-                            title={doc.name}
-                        ></iframe>
-                    </Box>))
-            }
-
-            {documents.filter(doc => doc.name === "Certificado de Avalúo")
-                .map((doc, index) => (
-                    <Box key={index} sx={{marginBottom: 2}}>
-                        <h3>{doc.name}</h3>
-                        <iframe
-                            src={doc.url}
-                            width="800px"
-                            height="500px"
-                            title={doc.name}
-                        ></iframe>
-                    </Box>))
-            }
-
-            {(type === "Primera Vivienda" || type === "Segunda Vivienda") && (
-                documents.filter(doc => doc.name === "Historial Crediticio")
-                    .map((doc, index) => (
-                        <Box key={index} sx={{marginBottom: 2}}>
-                            <h3>{doc.name}</h3>
-                            <iframe
-                                src={doc.url}
-                                width="800px"
-                                height="500px"
-                                title={doc.name}
-                            ></iframe>
-                        </Box>))
-            )}
 
             {type === "Segunda Vivienda" && (
                 documents.filter(doc => doc.name === "Escritura de Primera Vivienda")
-                    .map((doc, index) => (
-                        <Box key={index} sx={{marginBottom: 2}}>
-                            <h3>{doc.name}</h3>
-                            <iframe
-                                src={doc.url}
-                                width="800px"
-                                height="500px"
-                                title={doc.name}
-                            ></iframe>
-                        </Box>))
-            )}
-
-            {type === "Propiedades Comerciales" && (
-                documents.filter(doc => doc.name === "Estado Financiero del Negocio")
                     .map((doc, index) => (
                         <Box key={index} sx={{marginBottom: 2}}>
                             <h3>{doc.name}</h3>
@@ -362,6 +268,95 @@ const EvaluateLoan = () => {
                         </Box>))
             )}
 
+            {documents.filter(doc => doc.name === "Historial DICOM")
+                .map((doc, index) => (
+                    <Box key={index} sx={{marginBottom: 2}}>
+                        <h3>{doc.name}</h3>
+                        <iframe
+                            src={doc.url}
+                            width="800px"
+                            height="500px"
+                            title={doc.name}
+                        ></iframe>
+                    </Box>))
+            }
+
+            <FormControl fullWidth sx={{marginBottom: 2}}>
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={dicom}
+                            onChange={(e) => setDicom(e.target.checked)}
+                            name="dicom"
+                            color="primary"
+                        />
+                    }
+                    label="DICOM"
+                />
+            </FormControl>
+
+            {documents.filter(doc => doc.name === "Comprobante de Ingresos")
+                .map((doc, index) => (
+                    <Box key={index} sx={{marginBottom: 2}}>
+                        <h3>{doc.name}</h3>
+                        <iframe
+                            src={doc.url}
+                            width="800px"
+                            height="500px"
+                            title={doc.name}
+                        ></iframe>
+                    </Box>))
+            }
+
+            <FormControl fullWidth sx={{marginBottom: 2}}>
+                <TextField
+                    required={true}
+                    label="Ingreso Mensual"
+                    variant="outlined"
+                    value={monthlyIncome}
+                    onChange={e => {
+                        if (/^\d*$/.test(e.target.value) && e.target.value <= 999999999) setMonthlyIncome(e.target.value)
+                    }}
+                />
+            </FormControl>
+
+            <FormControl fullWidth sx={{marginBottom: 2}}>
+                <TextField
+                    required={true}
+                    label="Salario Acumulado"
+                    variant="outlined"
+                    value={accumulatedSalary}
+                    onChange={e => {
+                        if (/^\d*$/.test(e.target.value) && e.target.value <= 999999999) setAccumulatedSalary(e.target.value)
+                    }}
+                />
+            </FormControl>
+
+            <FormControl fullWidth sx={{marginBottom: 2}}>
+                <TextField
+                    required={true}
+                    label="Antigüedad Laboral"
+                    variant="outlined"
+                    value={employmentLongevity}
+                    onChange={e => {
+                        if (/^\d*$/.test(e.target.value) && e.target.value <= 50) setEmploymentLongevity(e.target.value)
+                    }}
+                />
+            </FormControl>
+
+            {documents.filter(doc => doc.name === "Certificado de Avalúo")
+                .map((doc, index) => (
+                    <Box key={index} sx={{marginBottom: 2}}>
+                        <h3>{doc.name}</h3>
+                        <iframe
+                            src={doc.url}
+                            width="800px"
+                            height="500px"
+                            title={doc.name}
+                        ></iframe>
+                    </Box>))
+            }
+
             {type === "Remodelación" && (
                 documents.filter(doc => doc.name === "Presupuesto de Remodelación")
                     .map((doc, index) => (
@@ -377,11 +372,118 @@ const EvaluateLoan = () => {
             )}
 
             <FormControl fullWidth sx={{marginBottom: 2}}>
+                <TextField
+                    required={true}
+                    label="Valor de la Propiedad"
+                    variant="outlined"
+                    value={propertyValue}
+                    onChange={e => {
+                        if (/^\d*$/.test(e.target.value) && e.target.value <= 999999999) setPropertyValue(e.target.value)
+                    }}
+                />
+            </FormControl>
+
+            {(type === "Primera Vivienda" || type === "Segunda Vivienda") && (
+                documents.filter(doc => doc.name === "Historial Crediticio")
+                    .map((doc, index) => (
+                        <Box key={index} sx={{marginBottom: 2}}>
+                            <h3>{doc.name}</h3>
+                            <iframe
+                                src={doc.url}
+                                width="800px"
+                                height="500px"
+                                title={doc.name}
+                            ></iframe>
+                        </Box>))
+            )}
+
+            {type === "Propiedades Comerciales" && (
+                documents.filter(doc => doc.name === "Estado Financiero del Negocio")
+                    .map((doc, index) => (
+                        <Box key={index} sx={{marginBottom: 2}}>
+                            <h3>{doc.name}</h3>
+                            <iframe
+                                src={doc.url}
+                                width="800px"
+                                height="500px"
+                                title={doc.name}
+                            ></iframe>
+                        </Box>))
+            )}
+
+            <FormControl fullWidth sx={{marginBottom: 2}}>
+                <TextField
+                    required={true}
+                    label="Deuda Total"
+                    variant="outlined"
+                    value={totalDebt}
+                    onChange={e => {
+                        if (/^\d*$/.test(e.target.value) && e.target.value <= 999999999) setTotalDebt(e.target.value)
+                    }}
+                />
+            </FormControl>
+
+            <FormControl fullWidth sx={{marginBottom: 2}}>
+                <TextField
+                    required={true}
+                    label="Antigüedad de la Cuenta de Ahorros"
+                    variant="outlined"
+                    value={savingsAccountLongevity}
+                    onChange={e => {
+                        if (/^\d*$/.test(e.target.value) && e.target.value <= 50) setSavingsAccountLongevity(e.target.value)
+                    }}
+                />
+            </FormControl>
+
+            <FormControl>
+                <h3>Cuentas de Ahorro</h3>
+
+                <TableContainer>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell align="center">Mes</TableCell>
+                                <TableCell align="center">Salario</TableCell>
+                                <TableCell align="center">Retiro</TableCell>
+                                <TableCell align="center">Depósito</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {rows.map((row, index) => (
+                                <TableRow key={index}>
+                                    <TableCell align="center">{index + 1}</TableCell>
+                                    <TableCell align="center">
+                                        <TextField
+                                            value={row.salary}
+                                            onChange={(e) => handleTableChange(index, "salary", e.target.value)}
+                                        />
+                                    </TableCell>
+                                    <TableCell align="center">
+                                        <TextField
+                                            value={row.withdrawal}
+                                            onChange={(e) => handleTableChange(index, "withdrawal", e.target.value)}
+                                        />
+                                    </TableCell>
+                                    <TableCell align="center">
+                                        <TextField
+                                            value={row.deposit}
+                                            onChange={(e) => handleTableChange(index, "deposit", e.target.value)}
+                                        />
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </FormControl>
+
+            {/* Botones */}
+            <FormControl fullWidth sx={{marginBottom: 2}}>
                 <Button
-                    type="submit"
                     variant="contained"
                     color="info"
                     startIcon={<SaveIcon/>}
+                    onClick={handleSave}
                 >
                     Guardar Cambios
                 </Button>
@@ -410,22 +512,28 @@ const EvaluateLoan = () => {
                             let errorMessages = [];
                             switch (error) {
                                 case "R1":
-                                    errorMessages.push("Falla respecto a regla 1");
+                                    errorMessages.push("Falla en R1: " +
+                                        "Relación cuota/ingreso es mayor que el umbral establecido (35%).");
                                     break;
                                 case "R2":
-                                    errorMessages.push("Falla respecto a regla 2");
+                                    errorMessages.push("Falla en R2: " +
+                                        "Problemas con el historial crediticio del cliente en DICOM.");
                                     break;
                                 case "R3":
-                                    errorMessages.push("Falla respecto a regla 3");
+                                    errorMessages.push("Falla en R3: " +
+                                        "Se requiere que el cliente tenga al menos 1 a 2 años de antigüedad en su empleo actual.");
                                     break;
                                 case "R4":
-                                    errorMessages.push("Falla respecto a regla 4");
+                                    errorMessages.push("Falla en R4: " +
+                                        "Relación deuda/ingreso es mayor que el umbral establecido (50%).");
                                     break;
                                 case "R5":
-                                    errorMessages.push("Falla respecto a regla 5");
+                                    errorMessages.push("Falla en R5: " +
+                                        "Se supero el monto máximo de financiamiento permitido para el tipo de crédito.");
                                     break;
                                 case "R6":
-                                    errorMessages.push("Falla respecto a regla 6");
+                                    errorMessages.push("Falla en R6: " +
+                                        "Cliente supera la edad maxima permitida al momento de finalizar el préstamo.");
                                     break;
                             }
                             return (
@@ -459,6 +567,7 @@ const EvaluateLoan = () => {
                     Rechazar
                 </Button>
             </FormControl>
+            <hr/>
 
         </Box>
     );
