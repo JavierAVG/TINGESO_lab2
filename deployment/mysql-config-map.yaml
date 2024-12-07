@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-config-map
+  labels:
+    app: mysql-config-map
+data:
+  DB_HOST_CLIENTS: clients-db-service
+  DB_PORT_CLIENTS: "3306"
+  DB_NAME_CLIENTS: clients-db
+  DB_HOST_LOANS: loans-db-service
+  DB_PORT_LOANS: "3306"
+  DB_NAME_LOANS: loans-db
+  DB_HOST_STATUSES: statuses-db-service
+  DB_PORT_STATUSES: "3306"
+  DB_NAME_STATUSES: statuses-db

@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client-service-deployment
+  labels:
+    app: client-service-deployment
+spec:
+  selector:
+    matchLabels:
+      app: client-service-deployment
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: client-service-deployment
+    spec:
+      containers:
+        - name: client-service
+          image: javieravg/client-service:latest
+          ports:
+            - containerPort: 8082
+          env:
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: mysql-config-map
+                  key: DB_HOST_CLIENTS
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: mysql-config-map
+                  key: DB_PORT_CLIENTS
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: mysql-config-map
+                  key: DB_NAME_CLIENTS
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secrets
+                  key: DB_USER_CLIENTS
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secrets
+                  key: DB_PASSWORD_CLIENTS
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: client-service-service
+  labels:
+    app: client-service-service
+spec:
+  selector:
+    app: client-service-deployment
+  ports:
+    - protocol: TCP
+      port: 8082
+      targetPort: 8082
+  type: LoadBalancer

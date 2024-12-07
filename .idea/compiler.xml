@@ -6,8 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="eureka-service" />
+        <module name="gateway-service" />
+        <module name="config-service" />
       </profile>
-      <profile name="Annotation profile for simulator-service" enabled="true">
+      <profile name="Annotation profile for status-service" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -15,12 +18,23 @@
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar" />
         </processorPath>
         <module name="simulator-service" />
+        <module name="status-service" />
+        <module name="evaluation-service" />
+        <module name="loan-service" />
+        <module name="client-service" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="client-service" options="-parameters" />
+      <module name="config-service" options="-parameters" />
+      <module name="eureka-service" options="-parameters" />
+      <module name="evaluation-service" options="-parameters" />
+      <module name="gateway-service" options="-parameters" />
+      <module name="loan-service" options="-parameters" />
       <module name="simulator-service" options="-parameters" />
+      <module name="status-service" options="-parameters" />
     </option>
   </component>
 </project>
