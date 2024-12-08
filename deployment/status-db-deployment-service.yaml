@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: client-db-pv
+  name: status-db-pv
   labels:
     type: local
 spec:
@@ -11,12 +11,12 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "/data/client-db-data"
+    path: "/data/status-db-data"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: client-db-pvc
+  name: status-db-pvc
   labels:
     app: mysql
     tier: database
@@ -31,24 +31,24 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: client-db-deployment
+  name: status-db-deployment
   labels:
-    app: client-db-deployment
+    app: status-db-deployment
     tier: database
 spec:
   selector:
     matchLabels:
-      app: client-db-deployment
+      app: status-db-deployment
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: client-db-deployment
+        app: status-db-deployment
         tier: database
     spec:
       containers:
-        - name: client-db
+        - name: status-db
           image: mysql:latest
           imagePullPolicy: "IfNotPresent"
           ports:
@@ -58,26 +58,26 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: mysql-secrets
-                  key: DB_USER_CLIENTS
+                  key: DB_USER_STATUSES
             - name: MYSQL_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: mysql-secrets
-                  key: DB_PASSWORD_CLIENTS
+                  key: DB_PASSWORD_STATUSES
           volumeMounts:
             - mountPath: /var/lib/mysql
-              name: client-db-data
+              name: status-db-data
       volumes:
-        - name: client-db-data
+        - name: status-db-data
           persistentVolumeClaim:
-            claimName: client-db-pvc
+            claimName: status-db-pvc
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: client-db-service
+  name: status-db-service
   labels:
-    app: client-db-service
+    app: status-db-service
     tier: database
 spec:
   ports:
@@ -85,6 +85,6 @@ spec:
       targetPort: 3306
       protocol: TCP
   selector:
-    app: client-db-deployment
+    app: status-db-deployment
     tier: database
   type: LoadBalancer
