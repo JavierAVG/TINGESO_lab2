@@ -6,5 +6,3 @@ eureka:
     register-with-eureka: false
     service-url:
       defaultZone: http://eureka-service-service:8761/eureka/
-  instance:
-    hostname: eureka-service-service
