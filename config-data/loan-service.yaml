@@ -2,7 +2,7 @@ server:
   port: ${PORT:${SERVER_PORT:0}}
 spring:
   datasource:
-    url: jdbc:mysql://${DB_HOST:127.0.0.1}:${DB_PORT:3306}/${DB_NAME:loandb}
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT:3306}/${DB_NAME:loansdb}
     username: ${DB_USER:root}
     password: ${DB_PASSWORD:36133520}
     driver-class-name: com.mysql.cj.jdbc.Driver
