@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: state-service-deployment
+  labels:
+    app: state-service-deployment
+spec:
+  selector:
+    matchLabels:
+      app: state-service-deployment
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: state-service-deployment
+    spec:
+      containers:
+        - name: state-service
+          image: javieravg/state-service:latest
+          ports:
+            - containerPort: 8084
+          env:
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: mysql-config-map
+                  key: DB_HOST_STATES
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: mysql-config-map
+                  key: DB_PORT_STATES
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: mysql-config-map
+                  key: DB_NAME_STATES
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secrets
+                  key: DB_USER_STATES
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secrets
+                  key: DB_PASSWORD_STATES
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: state-service-service
+  labels:
+    app: state-service-service
+spec:
+  selector:
+    app: state-service-deployment
+  ports:
+    - protocol: TCP
+      port: 8084
+      targetPort: 8084
+  type: LoadBalancer

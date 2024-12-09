@@ -11,6 +11,6 @@ data:
   DB_HOST_LOANS: loan-db-service
   DB_PORT_LOANS: "3306"
   DB_NAME_LOANS: loansdb
-  DB_HOST_STATUSES: status-db-service
-  DB_PORT_STATUSES: "3306"
-  DB_NAME_STATUSES: statusesdb
+  DB_HOST_STATES: state-db-service
+  DB_PORT_STATES: "3306"
+  DB_NAME_STATES: statesdb
