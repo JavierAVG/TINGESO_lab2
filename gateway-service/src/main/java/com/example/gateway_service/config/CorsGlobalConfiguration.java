@@ -15,7 +15,7 @@ public class CorsGlobalConfiguration {
         corsConfig.addAllowedOrigin("*"); // Frontend
         corsConfig.addAllowedMethod("*"); // Métodos HTTP
         corsConfig.addAllowedHeader("*"); // Headers permitidos
-        corsConfig.setAllowCredentials(true); // Cookies o credenciales
+        corsConfig.setAllowCredentials(false); // Cookies o credenciales
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfig);
