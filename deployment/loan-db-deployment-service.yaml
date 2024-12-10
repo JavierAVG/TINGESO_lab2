@@ -55,7 +55,10 @@ spec:
             - containerPort: 3306
           env:
             - name: MYSQL_ROOT_PASSWORD
-              value: "36133520"
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secrets
+                  key: DB_PASSWORD_LOANS
           volumeMounts:
             - mountPath: /var/lib/mysql
               name: loan-db-data
