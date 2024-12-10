@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: state-service
-          image: javieravg/state-service:latest
+          image: javieravg/status-service:latest
           ports:
             - containerPort: 8084
           env:
